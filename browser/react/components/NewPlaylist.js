@@ -8,7 +8,8 @@ export default class NewPlaylist extends Component {
     super();
     this.state = {
       inputValue : '',
-      invalid : true
+      invalid : true,
+      anyInput: false
     };
     this.handler = this.handler.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -16,11 +17,12 @@ export default class NewPlaylist extends Component {
 
   handler(e) {
     e.preventDefault();
+
     let bool = true;
     if (e.target.value.length > 0 && e.target.value.length < 17) {
       bool = false
     }
-      this.setState({invalid: bool, inputValue: e.target.value})
+      this.setState({invalid: bool, inputValue: e.target.value, anyInput: true})
     }
 
 
@@ -28,6 +30,12 @@ export default class NewPlaylist extends Component {
     e.preventDefault();
     console.log(this.state.inputValue)
     this.setState({inputValue: ''})
+    let request = this.state.inputValue;
+    axios.post('/api/playlists', { name : request })
+    .then(res => res.data)
+    .then(result => {
+      console.log(result) // response json from the server!
+    });
   }
 
   render () {
@@ -41,6 +49,9 @@ export default class NewPlaylist extends Component {
               <label className="col-xs-2 control-label">Name</label>
               <div className="col-xs-10">
                 <input className="form-control" type="text" onChange = {this.handler} value = {this.state.inputValue}/>
+                {
+                (this.state.invalid && this.state.anyInput) ? <div className="alert alert-warning">Name must be contain at least 1 and less than 17 characters.</div> : <div></div>
+                }
               </div>
             </div>
             <div className="form-group">
