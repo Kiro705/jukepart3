@@ -7,8 +7,10 @@ export default class AllArtists extends Component {
   constructor () {
     super();
     this.state = {
-      artists: []
+      artists: [],
+      filterInput: ''
     };
+    this.filter = this.filter.bind(this)
   }
 
   componentDidMount () {
@@ -17,13 +19,26 @@ export default class AllArtists extends Component {
       .then(artists => this.setState({ artists }));
   }
 
+  filter(e) {
+    this.setState({ filterInput: e.target.value })
+  }
+
   render () {
 
-    const artists = this.state.artists;
+    const artists = this.state.artists.filter((artist) => {
+                      return artist.name.match(this.state.filterInput);
+                    })
 
     return (
       <div>
         <h3>Artists</h3>
+        <form className="form-group" style={{marginTop: '20px'}}>
+          <input
+            className="form-control"
+            placeholder="Enter artist name"
+            onChange={this.filter}
+          />
+        </form>
         <div className="list-group">
           {
             artists.map(artist => {
