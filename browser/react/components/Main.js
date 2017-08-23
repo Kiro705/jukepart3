@@ -9,7 +9,7 @@ import Player from './Player';
 import NewPlaylist from './NewPlaylist';
 import SinglePlaylist from './SinglePlaylist.jsx';
 import axios from 'axios';
-
+import AddSongForm from './AddSongForm.jsx';
 
 export default class Main extends Component {
   constructor(){
