@@ -43,6 +43,7 @@ export default class SinglePlaylist extends React.Component {
 
   addSong(song){
     if(this.state.playlist.id && song.id){
+      console.log(song);
       axios.post('/api/playlists/' + this.state.playlist.id + '/songs', {song})
     } 
   }

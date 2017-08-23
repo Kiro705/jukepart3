@@ -20,10 +20,11 @@ export default class extends Component {
 
   handleChange(event){
     console.log(event.target.value);
-    this.setState({selectedSong: this.state.songs.filter(function(song){
-      return (event.target.value === song.id);
+    let theArray = this.state.songs.filter(function(song){
+      return (+event.target.value === song.id);
     })
-  })
+    console.log(theArray);
+    this.setState({selectedSong: theArray})
   }
 
 
@@ -37,7 +38,7 @@ export default class extends Component {
         <div className="form-group">
           <label htmlFor="song" className="col-xs-2 control-label">Song</label>
           <div className="col-xs-10">
-            <select className="form-control" name="song" onChange={this.handleChange}>
+            <select className="form-control" name="song" onChange= {this.handleChange}>
 
             {this.state.songs.map( (song) => {
               return (
@@ -58,3 +59,4 @@ export default class extends Component {
     );
   }
 }
+
