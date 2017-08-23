@@ -7,6 +7,7 @@ import SingleArtist from './SingleArtist';
 import Sidebar from './Sidebar';
 import Player from './Player';
 import NewPlaylist from './NewPlaylist';
+import SinglePlaylist from './SinglePlaylist.jsx';
 import axios from 'axios';
 
 
@@ -16,12 +17,21 @@ export default class Main extends Component {
     this.state = {
       playlists : []
     }
+    this.addPlaylist = this.addPlaylist.bind(this);
   }
 
   componentDidMount(){
     axios.get('/api/playlists')
       .then(res => res.data)
       .then(playlists => this.setState({ playlists }));
+  }
+
+  addPlaylist(request) {
+    axios.post('/api/playlists', { name : request })
+    .then(res => res.data)
+    .then(result => {
+      this.setState({playlists: [...this.state.playlists, result]});
+    });
   }
 
 
@@ -39,7 +49,8 @@ export default class Main extends Component {
               <Route path="/albums/:albumId" component={SingleAlbum} />
               <Route exact path="/artists" component={AllArtists} />
               <Route path="/artists/:artistId" component={SingleArtist} />
-              <Route path = "/NewPlaylist" component = {NewPlaylist} />
+              <Route exact path = "/NewPlaylist" render = { () => <NewPlaylist addPlaylist={this.addPlaylist} /> } />
+              <Route path="/playlist/:playlistId" component={SinglePlaylist} />
               <Route component={StatefulAlbums} />
 
             </Switch>
@@ -50,3 +61,4 @@ export default class Main extends Component {
     );
   }
 }
+//<Route path="/playlist/:playlistId" render ={ () => <SinglePlaylist playlist={this.state.playlists[match.params.playlistId - 1]} />

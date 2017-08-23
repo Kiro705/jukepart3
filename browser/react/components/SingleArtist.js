@@ -12,11 +12,11 @@ class SingleArtist extends React.Component {
     this.state = {
       artist: {}
     };
+    this.stateSetter = this.stateSetter.bind(this);
   }
 
-  componentDidMount () {
-    const artistId = this.props.match.params.artistId;
-    const mainPath = `/api/artists/${artistId}`;
+  stateSetter (theId) {
+    const mainPath = `/api/artists/${theId}`;
     const paths = [mainPath, `${mainPath}/albums`, `${mainPath}/songs`];
     Bluebird
       .map(paths, path => axios.get(path))
@@ -26,6 +26,18 @@ class SingleArtist extends React.Component {
         artist.songs = songs;
         this.setState({ artist });
       });
+  }
+
+  componentDidMount () {
+    const artistId = this.props.match.params.artistId;
+    this.stateSetter(artistId);
+  }
+  
+  componentWillReceiveProps (nextProps) {
+    const newAtristId = +nextProps.match.params.artistId;
+    if (this.state.artist.id !== newAtristId){
+      this.stateSetter(newAtristId);
+    }
   }
 
   render () {
