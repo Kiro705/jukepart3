@@ -3,11 +3,13 @@ import axios from 'axios';
 
 
 export default class extends Component {
-  constructor(){
-      super()
+  constructor(props){
+      super(props)
       this.state = {
-        songs : []
+        songs : [],
+        selectedSong : []
       }
+      this.handleChange = this.handleChange.bind(this);
     }
 
    componentDidMount(){
@@ -16,23 +18,30 @@ export default class extends Component {
       .then(songs => this.setState({ songs }));
   }
 
+  handleChange(event){
+    console.log(event.target.value);
+    this.setState({selectedSong: this.state.songs.filter(function(song){
+      return (event.target.value === song.id);
+    })
+  })
+  }
 
 
   render () {
 
     return (
     <div className="well">
-    <form className="form-horizontal" noValidate name="songSelect">
+    <form className="form-horizontal" noValidate name="songSelect" onSubmit = {this.props.addSong(this.state.selectedSong)}>
       <fieldset>
         <legend>Add to Playlist</legend>
         <div className="form-group">
           <label htmlFor="song" className="col-xs-2 control-label">Song</label>
           <div className="col-xs-10">
-            <select className="form-control" name="song">
+            <select className="form-control" name="song" onChange={this.handleChange}>
 
             {this.state.songs.map( (song) => {
               return (
-            <option key = {song.id} value={song}>{song.name}</option>
+            <option key = {song.id} value= {song.id} >{song.name}</option>
                     )
             })}
             </select>

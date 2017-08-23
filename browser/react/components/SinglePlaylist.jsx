@@ -10,33 +10,23 @@ export default class SinglePlaylist extends React.Component {
     super();
     this.state = {
       playlist: {},
-      songs: {}
+      songs: []
     };
     this.stateSetter = this.stateSetter.bind(this);
+    this.addSong = this.addSong.bind(this);
   }
-
-  // addSong(song){
-  //   axios.post('/api/playlists/' + this.props.playlist.id + '/songs', {song})
-  // }
 
   stateSetter (theProps) {
     axios.get(`/api/playlists/${theProps}`)
     .then(res => res.data)
     .then(playlist => {
-      console.log(playlist);
-      this.setState({ playlist })
-      return playlist
+      axios.get('/api/playlists/' + playlist.id + '/songs')
+      .then(res => res.data)
+      .then(songs => {
+        this.setState({playlist, songs})
+      })
     })
-    .then((playlist) => getPlaylist(playlist.id));
   }
-
-  getPlaylist (id) {
-        axios.get('/api/playlists/' + id + '/songs')
-        .then(res => res.data)
-        .then(songs => {
-        this.setState({songs})
-      })}
-
 
   componentDidMount () {
     const playlistId = this.props.match.params.playlistId;
@@ -51,17 +41,23 @@ export default class SinglePlaylist extends React.Component {
     }
   }
 
+  addSong(song){
+    if(this.state.playlist.id && song.id){
+      axios.post('/api/playlists/' + this.state.playlist.id + '/songs', {song})
+    } 
+  }
+
 
   render () {
     const playlist = this.state.playlist
+    const songs = this.state.songs
     return (
       <div>
         <h3>{ playlist.name }</h3>
-        {//<Songs songs={playlist.songs} /> {/** Hooray for reusability! */}
-        //{ playlist.songs && !playlist.songs.length && <small>No songs.</small> }
-      }
+        <Songs songs={songs} /> {/** Hooray for reusability! */}
+        { songs && !songs.length && <small>No songs.</small> }
         <hr />
-      <AddSongForm playlist = {this.state.playlist} />
+      <AddSongForm playlist = {this.state.playlist} addSong={this.addSong} />
       </div>
     );
   }
